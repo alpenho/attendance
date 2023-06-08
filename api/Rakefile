@@ -1,0 +1,4 @@
+require 'sinatra/activerecord/rake'
+require './app'
+
+ActiveRecord::Base.configurations = YAML.load_file('config/database.yml')
