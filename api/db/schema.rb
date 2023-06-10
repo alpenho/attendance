@@ -13,19 +13,18 @@
 ActiveRecord::Schema[7.0].define(version: 2023_06_10_161529) do
   create_table "attendances", charset: "utf8", force: :cascade do |t|
     t.integer "user_id"
-    t.datetime "check_in"
-    t.datetime "check_out"
+    t.datetime "clock_in"
+    t.datetime "clock_out"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["created_at"], name: "index_attendances_on_created_at"
-    t.index ["user_id", "check_in"], name: "index_attendances_on_user_id_and_check_in"
-    t.index ["user_id", "check_out"], name: "index_attendances_on_user_id_and_check_out"
+    t.index ["user_id", "clock_in"], name: "index_attendances_on_user_id_and_clock_in"
+    t.index ["user_id", "clock_out"], name: "index_attendances_on_user_id_and_clock_out"
   end
 
   create_table "relationships", charset: "utf8", force: :cascade do |t|
     t.integer "follower_id"
     t.integer "followed_id"
-    t.integer "is_deleted"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["followed_id"], name: "index_relationships_on_followed_id"
