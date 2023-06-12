@@ -43,4 +43,42 @@ class AttendanceApiApp < Sinatra::Base
 
     json user.attendances.clock_in.order(created_at: :desc)
   end
+
+  post '/users/:id/follow' do
+    param :other_user_id, Integer, required: true
+
+    current_user = ::User.find_by(id: params[:id])
+    other_user = ::User.find_by(id: params[:other_user_id])
+
+    if other_user.blank? || current_user.blank?
+      halt 422, 'user_id incorrect'
+    end
+
+    ActiveRecord::Base.transaction do
+      begin
+        current_user.follow!(other_user)
+      rescue => error
+        halt 500, error.message
+      end
+    end
+
+    json current_user.following
+  end
+
+  post '/users/:id/unfollow' do
+    param :other_user_id, Integer, required: true
+
+    current_user = ::User.find_by(id: params[:id])
+    other_user = ::User.find_by(id: params[:other_user_id])
+
+    if other_user.blank? || current_user.blank?
+      halt 422, 'user_id incorrect'
+    end
+
+    ActiveRecord::Base.transaction do
+      current_user.unfollow!(other_user)
+    end
+
+    json current_user.following
+  end
 end

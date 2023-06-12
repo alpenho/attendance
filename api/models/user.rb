@@ -10,4 +10,12 @@ class User < ActiveRecord::Base
   has_many :followers, through: :passive_relationships, source: :follower
 
   validates :name, presence: true
+
+  def follow!(other_user)
+    active_relationships.create!(followed_id: other_user.id)
+  end
+
+  def unfollow!(other_user)
+    active_relationships.find_by(followed_id: other_user.id).destroy!
+  end
 end
