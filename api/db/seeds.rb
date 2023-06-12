@@ -21,8 +21,8 @@ def create_attendances!
     data_attendances.each do |data_attendance|
       new_attendance = ::Attendance.new(
         user_id: user.id,
-        clock_in: DateTime.strptime(data_attendance['clock_in'], '%Y-%m-%d %H:%M %z'),
-        clock_out: DateTime.strptime(data_attendance['clock_out'], '%Y-%m-%d %H:%M %z')
+        status: data_attendance['status'],
+        record_time: DateTime.strptime(data_attendance['record_time'], '%Y-%m-%d %H:%M %z')
       )
       new_attendance.save!
     end

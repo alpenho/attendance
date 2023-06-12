@@ -13,13 +13,12 @@
 ActiveRecord::Schema[7.0].define(version: 2023_06_10_161529) do
   create_table "attendances", charset: "utf8", force: :cascade do |t|
     t.integer "user_id"
-    t.datetime "clock_in"
-    t.datetime "clock_out"
+    t.integer "status", null: false
+    t.datetime "record_time", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["created_at"], name: "index_attendances_on_created_at"
-    t.index ["user_id", "clock_in"], name: "index_attendances_on_user_id_and_clock_in"
-    t.index ["user_id", "clock_out"], name: "index_attendances_on_user_id_and_clock_out"
+    t.index ["user_id", "status", "created_at"], name: "index_attendances_on_user_id_and_status_and_created_at"
   end
 
   create_table "relationships", charset: "utf8", force: :cascade do |t|

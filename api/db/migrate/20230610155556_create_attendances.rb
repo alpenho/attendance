@@ -2,14 +2,13 @@ class CreateAttendances < ActiveRecord::Migration[7.0]
   def up
     create_table :attendances do |t|
       t.integer  :user_id
-      t.datetime :clock_in, null: true
-      t.datetime :clock_out, null: true
+      t.integer  :status, null: false
+      t.datetime :record_time, null: false
 
       t.timestamps null: false
     end
 
-    add_index :attendances, [:user_id, :clock_in]
-    add_index :attendances, [:user_id, :clock_out]
+    add_index :attendances, [:user_id, :status, :created_at]
     add_index :attendances, :created_at
   end
 
