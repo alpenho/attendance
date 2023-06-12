@@ -81,4 +81,41 @@ class AttendanceApiApp < Sinatra::Base
 
     json current_user.following
   end
+
+  get '/users/:id/sleep-record' do
+    current_user = ::User.find_by(id: params[:id])
+
+    if current_user.blank?
+      halt 422, 'user_id incorrect'
+    end
+
+    list_user_ids = current_user.following.map(&:id)
+    list_user_ids << current_user.id
+
+    current_time = Time.now.utc
+    week_ago = (current_time - 1.week) + 1.day
+    attendances = ::Attendance.where(user_id: list_user_ids).where("record_time <= ? AND record_time >= ?", current_time, week_ago)
+
+    sleep_records = []
+    while week_ago <= current_time
+      user_attendances = attendances.select { |attendance|
+        attendance.record_time >= week_ago.beginning_of_day && attendance.record_time <= week_ago.end_of_day
+      }.group_by { |attendance|
+        attendance.user_id
+      }
+
+      results = user_attendances.map do |k, v|
+        {
+          user_id: k,
+          sleep_record: (((v.last.record_time - v.first.record_time) / 60) / 60),
+          created_at: v.last.created_at
+        }
+      end
+
+      sleep_records << results
+      week_ago += 1.day
+    end
+
+    json sleep_records.reject(&:empty?).flatten.sort_by { |record| record[:created_at] }
+  end
 end
